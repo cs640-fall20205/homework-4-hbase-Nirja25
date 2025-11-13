@@ -35,21 +35,25 @@ Here are some additional tips:
 
     * Delete individual column values in a row:
 
-        ```
-        WRITE EXAMPLE COMMAND HERE
-        ```
+
+        delete 'wiki', 'Home', 'revision:comment'
+
+
 
     * Delete an entire row
 
         ```
-        WRITE EXAMPLE COMMAND HERE
+        deleteall 'wiki', 'Home'
+
+
         ```
 
 
 2. Bookmark the HBase API documentation for the version of HBase you’re using.
 
     ```
-    WRITE URL HERE
+    https://hbase.apache.org/devapidocs/
+
     ```
 
 ### Part 3 - Create a family database
@@ -63,12 +67,47 @@ Specifically, you should have column families for the following:
 
 Place the Hbase code to create the families below:
 ```
+create 'family', 'personal', 'favorites', 'location'
 
 ```
 
 #### Step 2 - Load five rows of data.
 Make sure to have at least one row with more than one favorite food and at least one row with more than one favorite vacation location. Place the Hbase code below:
 ```
+put 'family', 'member1', 'personal:name', 'John'
+put 'family', 'member1', 'personal:birthday', '1990-01-15'
+put 'family', 'member1', 'favorites:food', 'Pizza, Pasta'
+put 'family', 'member1', 'favorites:vacation', 'Hawaii'
+put 'family', 'location:address', '123 Elm St, Boston, MA'
+put 'family', 'location:phone', '617-555-1111'
+
+put 'family', 'member2', 'personal:name', 'Alice'
+put 'family', 'member2', 'personal:birthday', '1995-03-20'
+put 'family', 'favorites:food', 'Sushi'
+put 'family', 'favorites:vacation', 'Paris, London'
+put 'family', 'location:address', '456 Pine St, Springfield, MA'
+put 'family', 'location:phone', '413-555-2222'
+
+put 'family', 'member3', 'personal:name', 'David'
+put 'family', 'personal:birthday', '2000-07-10'
+put 'family', 'favorites:food', 'Burgers'
+put 'family', 'favorites:vacation', 'New York'
+put 'family', 'location:address', '789 Maple Ave, Boston, MA'
+put 'family', 'location:phone', '617-555-3333'
+
+put 'family', 'member4', 'personal:name', 'Emma'
+put 'family', 'personal:birthday', '1988-11-02'
+put 'family', 'favorites:food', 'Pizza'
+put 'family', 'favorites:vacation', 'Hawaii, Florida'
+put 'family', 'location:address', '101 Oak St, Hartford, CT'
+put 'family', 'location:phone', '860-555-4444'
+
+put 'family', 'member5', 'personal:name', 'Sophia'
+put 'family', 'personal:birthday', '1998-05-23'
+put 'family', 'favorites:food', 'Tacos, Pizza'
+put 'family', 'favorites:vacation', 'New York'
+put 'family', 'location:address', '222 Birch Rd, Boston, MA'
+put 'family', 'location:phone', '617-555-5555'
 
 ```
 
@@ -78,37 +117,45 @@ Place the Hbase code **and the results** after each query.
 
 **Query 1:** Get complete information for a specific family member.
 ```
-ANSWER HERE
+get 'family', 'member1'
+
 ```
 
 **Query 2:** View only personal information for all family members.
 ```
-ANSWER HERE
+scan 'family', {COLUMNS => 'personal'}
+
 ```
 
 **Query 3:** Get the name, favorite foods, and vacation locations for one family member.
 ```
-ANSWER HERE
-```
+get 'family', 'member2', ['personal:name', 'favorites:food', 'favorites:vacation']
+get 'family', 'member2', ['personal:name', 'favorites:food', 'favorites:vacation']
+
+
 
 **Query 4:** Get a range of at least two family members.
 ```
-ANSWER HERE
+scan 'family', {STARTROW => 'member2', STOPROW => 'member4'}
+
 ```
 
 **Query 5:** Get the addresses for all family members.
 ```
-ANSWER HERE
+scan 'family', {COLUMNS => 'location:address'}
+
 ```
 
 **Query 6:** Get the names of family members who like a specific favorite food (e.g., pizza).
 ```
-ANSWER HERE
+scan 'family', {FILTER => "ValueFilter(=, 'substring:PIZZA')"}
+
 ```
 
 **Query 7:** Create a vacation preference list with names.
 ```
-ANSWER HERE
+scan 'family', {COLUMNS => ['personal:name', 'favorites:vacation']}
+
 ```
 
 ### Part 4 - 7in7 - Day 3 - Wrap Up
@@ -118,13 +165,24 @@ Read Day 3 - Wrap Up. Then answer the following.
 1. List the pros of HBase as described in our text.
 
     ```
-    ANSWER HERE
+    1. Highly scalable for big data workloads.
+2. Provides strong consistency and atomic operations at the row level.
+3. Built-in versioning and timestamped data storage.
+4. Supports compression, garbage collection, and in-memory tables.
+5. Integrates seamlessly with Hadoop ecosystem (Hive, Pig, etc.).
+6. Ideal for large-scale analytics and logging systems.
+
     ```
 
 2. List the cons of HBase as described in our text.
 
     ```
-    ANSWER HERE
+    1. Complex setup and configuration — not beginner-friendly.
+2. Does not scale down well; requires multiple nodes for efficiency.
+3. Slower for small datasets or low-latency transactional workloads.
+4. Limited documentation; often requires reading API or source code.
+5. Not a full relational system — no joins or schema enforcement.
+
     ```
 
 
